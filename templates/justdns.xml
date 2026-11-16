@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>JustDNS</Name>
+  <Repository>ghcr.io/bonderaustriaat/justdns:latest</Repository>
+  <Registry>https://ghcr.io/bonderaustriaat/justdns</Registry>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Icon>https://raw.githubusercontent.com/bonderaustriaAT/unraid-templates/main/icon.svg</Icon>
+  <WebUI>http://[IP]:[PORT:8080]</WebUI>
+  <Overview>JustDNS is a self-hosted filtering DNS resolver for your whole network. It blocks ads, trackers and malware, and its privacy dashboard shows which companies your devices contact, with a per-device breakdown and a world map of where answers resolve. It ships encrypted upstreams (DNS-over-TLS) by default, per-device and per-group policies, DNSSEC validation, user accounts with roles and TOTP, and optional multi-node high availability.
+
+Point your router's or devices' DNS at this server's IP, then open the dashboard on port 8080 and finish setup in the first-run wizard.
+
+Notes for Unraid:
+- The /keys volume holds the at-rest encryption key. Back it up separately from /data; losing it makes the sealed account and config files unreadable.
+- Ports 80 and 443 are only needed for the optional custom block page and clash with Unraid's own web UI. They are off by default here; map them to free host ports (or give the container its own IP) only if you enable the block page.
+- Ports 853 and 8443 are only needed if you let clients talk to JustDNS over encrypted DNS (DoT/DoH).
+- On Unraid, update JustDNS from the Docker tab. The upstream project's one-click in-app updater is not used in this template.</Overview>
+  <Support>https://github.com/bonderaustriaAT/JustDNS/issues</Support>
+  <Project>https://github.com/bonderaustriaAT/JustDNS</Project>
+  <TemplateURL>https://raw.githubusercontent.com/bonderaustriaAT/unraid-templates/main/templates/justdns.xml</TemplateURL>
+  <ReadMe>https://raw.githubusercontent.com/bonderaustriaAT/unraid-templates/main/README.md</ReadMe>
+  <Category>Network:Management Tools:Utilities</Category>
+  <ExtraSearchTerms>dns adblock ad-blocker pihole pi-hole adguard nextdns tracker privacy dnssec dns-over-tls doh dot resolver</ExtraSearchTerms>
+  <License>AGPL-3.0-or-later</License>
+  <Screenshot>https://raw.githubusercontent.com/bonderaustriaAT/JustDNS/main/docs/assets/privacy-dashboard.png</Screenshot>
+  <Screenshot>https://raw.githubusercontent.com/bonderaustriaAT/JustDNS/main/docs/assets/world-map.png</Screenshot>
+  <MinVer>6.9</MinVer>
+  <Date>2026-11-16</Date>
+  <Changes>Initial Community Apps template for JustDNS.</Changes>
+
+  <!-- Core: DNS service and web dashboard -->
+  <Config Name="Web UI" Target="8080" Default="8080" Mode="tcp" Description="HTTP port for the JustDNS dashboard." Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="DNS (UDP)" Target="53" Default="53" Mode="udp" Description="DNS service, UDP. Point your clients here." Type="Port" Display="always" Required="true" Mask="false">53</Config>
+  <Config Name="DNS (TCP)" Target="53" Default="53" Mode="tcp" Description="DNS service, TCP." Type="Port" Display="always" Required="true" Mask="false">53</Config>
+
+  <!-- Data and keys -->
+  <Config Name="Data" Target="/data" Default="/mnt/user/appdata/justdns" Mode="rw" Description="Persistent data: query log, lists, devices, settings." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/justdns</Config>
+  <Config Name="Keys" Target="/keys" Default="/mnt/user/appdata/justdns-keys" Mode="rw" Description="At-rest encryption key, kept separate from Data on purpose. Back this up." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/justdns-keys</Config>
+
+  <!-- Optional encrypted client DNS -->
+  <Config Name="DNS-over-TLS (DoT)" Target="853" Default="853" Mode="tcp" Description="Optional: encrypted client DNS over TLS. Enable in the dashboard first." Type="Port" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="DNS-over-HTTPS (DoH)" Target="8443" Default="8443" Mode="tcp" Description="Optional: encrypted client DNS over HTTPS. Enable in the dashboard first." Type="Port" Display="advanced" Required="false" Mask="false"></Config>
+
+  <!-- Optional custom block page (clashes with Unraid's own web UI on 80/443) -->
+  <Config Name="Block page (HTTP)" Target="80" Default="" Mode="tcp" Description="Optional: custom block page over HTTP. Clashes with Unraid's web UI on port 80; map to a free host port or give the container its own IP." Type="Port" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Block page (HTTPS)" Target="443" Default="" Mode="tcp" Description="Optional: custom block page over HTTPS. Clashes with Unraid's web UI on port 443; map to a free host port or give the container its own IP." Type="Port" Display="advanced" Required="false" Mask="false"></Config>
+
+  <!-- Variables -->
+  <Config Name="DNSSEC" Target="JUSTDNS_DNSSEC" Default="true" Mode="" Description="Validate DNSSEC on upstream answers." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Metrics token (Prometheus)" Target="JUSTDNS_METRICS_TOKEN" Default="" Mode="" Description="Optional: set a token to enable the GET /metrics endpoint. Leave blank to keep it off." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+</Container>

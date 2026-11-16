@@ -1,0 +1,7 @@
+<CommunityApplications>
+  <Profile>
+JustDNS Unraid templates. JustDNS is a self-hosted filtering DNS resolver with a company-level privacy dashboard, per-device policies, encrypted upstreams and optional multi-node high availability. Source, docs and issues: https://github.com/bonderaustriaAT/JustDNS
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/bonderaustriaAT/unraid-templates/main/icon.svg</Icon>
+  <WebPage>https://github.com/bonderaustriaAT/JustDNS</WebPage>
+</CommunityApplications>
